@@ -51,11 +51,21 @@
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="Active"/>
                                                 </button>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OdA-Ue-y7h">
+                                                    <rect key="frame" x="16" y="170" width="361" height="30"/>
+                                                    <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.0" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="m74-H0-wIR"/>
+                                                    </constraints>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="s4l-Gc-mRT" secondAttribute="trailing" constant="16" id="2Qu-e2-KJN"/>
+                                                <constraint firstItem="s4l-Gc-mRT" firstAttribute="trailing" secondItem="OdA-Ue-y7h" secondAttribute="trailing" id="2ck-61-zc2"/>
+                                                <constraint firstAttribute="bottom" secondItem="OdA-Ue-y7h" secondAttribute="bottom" id="7AG-Nu-qDl"/>
                                                 <constraint firstItem="s4l-Gc-mRT" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="w6B-IC-1mv" secondAttribute="trailing" constant="8" id="7Jt-Vi-Cfw"/>
+                                                <constraint firstItem="OdA-Ue-y7h" firstAttribute="leading" secondItem="s4l-Gc-mRT" secondAttribute="leading" id="9tN-pM-oKz"/>
                                                 <constraint firstAttribute="bottom" secondItem="s4l-Gc-mRT" secondAttribute="bottom" constant="4" id="FUo-z2-QYS"/>
                                                 <constraint firstItem="THZ-qN-2Rp" firstAttribute="top" secondItem="s4l-Gc-mRT" secondAttribute="top" id="LVU-pB-Mge"/>
                                                 <constraint firstItem="s4l-Gc-mRT" firstAttribute="leading" secondItem="nef-0b-Euh" secondAttribute="leading" constant="16" id="NVv-c1-TQv"/>
@@ -69,6 +79,7 @@
                                         <connections>
                                             <outlet property="cellImage" destination="s4l-Gc-mRT" id="cPd-7E-jx0"/>
                                             <outlet property="dateLabel" destination="w6B-IC-1mv" id="Mwd-DE-xkD"/>
+                                            <outlet property="gradientView" destination="OdA-Ue-y7h" id="oRF-Vz-V0R"/>
                                             <outlet property="likeButton" destination="THZ-qN-2Rp" id="vCO-E5-eDm"/>
                                         </connections>
                                     </tableViewCell>
