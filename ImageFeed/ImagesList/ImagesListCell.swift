@@ -4,7 +4,6 @@ final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
     private var gradientLayer: CAGradientLayer?
     
-    
     @IBOutlet private weak var gradientView: UIView!
     
     @IBOutlet private weak var cellImage: UIImageView!
@@ -50,6 +49,5 @@ final class ImagesListCell: UITableViewCell {
         
         setupGradient()
     }
-    
 }
 

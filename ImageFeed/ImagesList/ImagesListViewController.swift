@@ -29,9 +29,9 @@ final class ImagesListViewController: UIViewController {
             }
             
             let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image // 6
+            viewController.image = image
         } else {
-            super.prepare(for: segue, sender: sender) // 7
+            super.prepare(for: segue, sender: sender)
         }
     }
 }
