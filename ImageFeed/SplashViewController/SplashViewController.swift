@@ -2,7 +2,8 @@ import UIKit
 
 final class SplashViewController: UIViewController {
 
-    
+    private let mainStoryboardName = "Main"
+    private let tabBarControllerIdentifier = "TabBarViewController"
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
 
     private let storage = OAuth2TokenStorage()
@@ -10,24 +11,26 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear (_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = storage.token {
+        if storage.token != nil  {
             switchToTabBarController()
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
     }
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return
         }
         
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
+        let tabBarController = UIStoryboard(name: mainStoryboardName, bundle: .main)
+            .instantiateViewController(withIdentifier: tabBarControllerIdentifier)
            
         window.rootViewController = tabBarController
     }
 }
+
 extension SplashViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showAuthenticationScreenSegueIdentifier {
@@ -47,6 +50,9 @@ extension SplashViewController {
            }
     }
 }
+
+// MARK: - AuthViewControllerDelegate
+
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)

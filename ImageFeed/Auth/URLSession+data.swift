@@ -1,6 +1,6 @@
 import UIKit
 
-enum NetworkError: Error {  // 1
+enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
@@ -11,7 +11,7 @@ extension URLSession {
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
-        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in  // 2
+        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
                 completion(result)
             }
@@ -20,14 +20,14 @@ extension URLSession {
         let task = dataTask(with: request, completionHandler: { data, response, error in
             if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if 200 ..< 300 ~= statusCode {
-                    fulfillCompletionOnTheMainThread(.success(data)) // 3
+                    fulfillCompletionOnTheMainThread(.success(data))
                 } else {
-                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode))) // 4
+                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error = error {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error))) // 5
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
             } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError)) // 6
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
             }
         })
         

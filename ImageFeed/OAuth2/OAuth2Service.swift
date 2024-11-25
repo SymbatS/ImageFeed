@@ -3,21 +3,23 @@ import UIKit
 final class OAuth2Service {
     static let shared = OAuth2Service()
     
+    private init() {}
+    
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        guard let baseURL = URL(string: "https://unsplash.com") else {
+        guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
             print("Invalid base URL")
             return nil
         }
         
-        guard let url = URL(
-            string: "/oauth/token"
-            + "?client_id=\(Constants.accessKey)"
-            + "&&client_secret=\(Constants.secretKey)"
-            + "&&redirect_uri=\(Constants.redirectURI)"
-            + "&&code=\(code)"
-            + "&&grant_type=authorization_code",
-            relativeTo: baseURL
-        ) else {
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "client_secret", value: Constants.secretKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "grant_type", value: "authorization_code")
+        ]
+        
+        guard let url = urlComponents.url else {
             print("Invalid URL")
             return nil
         }

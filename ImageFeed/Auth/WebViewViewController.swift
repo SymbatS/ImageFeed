@@ -1,5 +1,6 @@
 import UIKit
 @preconcurrency import WebKit
+
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewControllerDidCancel(_ vc: WebViewViewController)
@@ -7,8 +8,8 @@ protocol WebViewViewControllerDelegate: AnyObject {
 
 final class WebViewViewController: UIViewController {
     
-    @IBOutlet private var webView: WKWebView!
-    @IBOutlet private var progressView: UIProgressView!
+    @IBOutlet private weak var webView: WKWebView!
+    @IBOutlet private weak var progressView: UIProgressView!
     weak var delegate: WebViewViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -21,8 +22,6 @@ final class WebViewViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // NOTE: Since the class is marked as `final` we don't need to pass a context.
-        // In case of inhertiance context must not be nil.
         webView.addObserver(
             self,
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
@@ -54,6 +53,7 @@ final class WebViewViewController: UIViewController {
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
 }
+// MARK: - WebViewViewControllerWKNavigationDelegate
 
 extension WebViewViewController: WKNavigationDelegate {
     enum WebViewConstants {
@@ -78,6 +78,7 @@ extension WebViewViewController: WKNavigationDelegate {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+    
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
@@ -90,6 +91,7 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
+    
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
             let url = navigationAction.request.url,
