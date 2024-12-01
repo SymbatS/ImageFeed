@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 
 final class ProfileViewController: UIViewController {
+    
+    private let profileService = ProfileService.shared
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -48,9 +50,11 @@ final class ProfileViewController: UIViewController {
         view.addSubview(button)
         return button
     }()
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+        fetchAndUpdateProfile()
     }
     private func setupConstraints(){
         NSLayoutConstraint.activate([
@@ -79,5 +83,22 @@ final class ProfileViewController: UIViewController {
         descrLabel.text = ""
         avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
         avatarImageView.tintColor = UIColor(red: 174/255, green: 175/255, blue: 180/255, alpha: 1)
+    }
+    
+    private func fetchAndUpdateProfile() {
+        profileService.fetchProfile  { [weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.updateProfileDetails(profile: profile)
+            case .failure(let error):
+                print("Error fetching profile \(error.localizedDescription)")
+            }
+            
+        }
+    }
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        nicknameLabel.text = profile.loginName
+        descrLabel.text = profile.bio
     }
 }

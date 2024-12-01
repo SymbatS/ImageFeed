@@ -1,7 +1,8 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-
+    
+    private let profileService = ProfileService.shared
     private let mainStoryboardName = "Main"
     private let tabBarControllerIdentifier = "TabBarViewController"
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
@@ -12,7 +13,7 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
         
         if storage.token != nil  {
-            switchToTabBarController()
+            fetchProfile()
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
@@ -56,6 +57,23 @@ extension SplashViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
-        switchToTabBarController()
+        fetchProfile()
+    }
+    private func fetchProfile() {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile {  [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let profile):
+                self.switchToTabBarController()
+                print("Profile fetched \(profile)")
+            case .failure(let error):
+                print("Error fetching profile \(error)")
+                break
+            }
+        }
     }
 }
