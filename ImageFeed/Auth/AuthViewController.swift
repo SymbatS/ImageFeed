@@ -47,10 +47,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)
-        ProgressHUD.animate()
-        
-        oauth2Service.fetchOAuthToken(code: code) { result in
-            ProgressHUD.dismiss()
+        DispatchQueue.main.async {
+            UIBlockingProgressHUD.show()
+        }
+        oauth2Service.fetchOAuthToken(code) { result in
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.dismiss()
+            }
             switch result {
             case .success(let token):
                 print("Successfully received token: \(token)")
