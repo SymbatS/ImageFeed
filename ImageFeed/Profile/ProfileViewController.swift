@@ -60,8 +60,8 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "ypBlack")
         setupConstraints()
-        
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
@@ -133,15 +133,9 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = ""
         avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
         avatarImageView.tintColor = UIColor(red: 174/255, green: 175/255, blue: 180/255, alpha: 1)
-        
+
         let tokenStorage = OAuth2TokenStorage()
         tokenStorage.token = nil
-        
-        guard let window = UIApplication.shared.windows.first else { return }
-        let authViewController = AuthViewController()
-        authViewController.modalPresentationStyle = .fullScreen
-        window.rootViewController = authViewController
-        window.makeKeyAndVisible()
     }
     
     private func fetchAndUpdateProfile() {
@@ -177,7 +171,7 @@ final class ProfileViewController: UIViewController {
             message: "Уверены что хотите выйти?",
             preferredStyle: .alert
         )
-        let yesAction = UIAlertAction(title: "Да", style: .destructive) { _ in
+        let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
             self.performLogout()
         }
         let noAction = UIAlertAction(
