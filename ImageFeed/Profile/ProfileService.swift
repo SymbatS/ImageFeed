@@ -5,16 +5,15 @@ final class ProfileService {
     
     private let session = URLSession.shared
     private let baseURL = Constants.defaultBaseURL
-    private var task: URLSessionDataTask?
+    private var task: URLSessionTask?
     private var lastToken: String?
     private let tokenStorage = OAuth2TokenStorage()
     private(set) var profile: Profile?
-
+    
     private init() {}
     
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
-            assert(Thread.isMainThread)
-
+        assert(Thread.isMainThread)
         guard let token = tokenStorage.token else {
             completion(.failure(ServiceError.missingToken))
             return
@@ -22,57 +21,43 @@ final class ProfileService {
         
         if task != nil {
             if lastToken != token {
-                       task?.cancel()
-                   } else {
-                       completion(.failure(ServiceError.invalidURL))
-                       return
-                   }
-               } else {
-                   if lastToken == token {
-                       completion(.failure(ServiceError.invalidURL))
-                       return
-                   }
-               }
+                task?.cancel()
+            } else {
+                completion(.failure(ServiceError.invalidURL))
+                return
+            }
+        } else {
+            if lastToken == token {
+                completion(.failure(ServiceError.invalidURL))
+                return
+            }
+        }
         lastToken = token
         
         guard let url = URL(string: "\(baseURL)/me")
-               else {
-                   completion(.failure(ServiceError.invalidURL))
-                   return
-               }
+        else {
+            completion(.failure(ServiceError.invalidURL))
+            return
+        }
         
         let request = URLRequest.makeRequest(url: url, token: token)
         
-        let task = session.dataTask(with: request) { [weak self] data, response, error in
-                   DispatchQueue.main.async {
-                       if let error = error {
-                           print("Network error: \(error.localizedDescription)")
-                           completion(.failure(error))
-                           self?.resetTask()
-                           return
-                       }
-
-                       guard let data = data else {
-                           completion(.failure(ServiceError.noData))
-                           self?.resetTask()
-                           return
-                       }
-
-                       do {
-                           let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
-                           let profile = Profile(from: profileResult)
-                           self?.profile = profile
-                           completion(.success(profile))
-                       } catch {
-                           print("Decoding error: \(error.localizedDescription)")
-                           completion(.failure(error))
-                       }
-                       self?.resetTask()
-                   }
-               }
-               self.task = task
-               task.resume()
-           }
+        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profileResult):
+                    let profile = Profile(from: profileResult)
+                    self?.profile = profile
+                    completion(.success(profile))
+                case .failure(let error):
+                    print("Error fetching profile: \(error)")
+                }
+                self?.resetTask()
+            }
+        }
+        self.task = task
+        task.resume()
+    }
     
     private func resetTask() {
         self.task = nil
@@ -88,24 +73,24 @@ enum ServiceError: Error {
 
 struct ProfileResult: Codable {
     let id: String
-        let username: String
-        let name: String?
-        let bio: String?
-        let location: String?
-        let totalLikes: Int?
-        let totalPhotos: Int?
-        let profileImage: ProfileImage?
-
-        enum CodingKeys: String, CodingKey {
-            case id
-            case username
-            case name
-            case bio
-            case location
-            case totalLikes = "total_likes"
-            case totalPhotos = "total_photos"
-            case profileImage = "profile_image"
-        }
+    let username: String
+    let name: String?
+    let bio: String?
+    let location: String?
+    let totalLikes: Int?
+    let totalPhotos: Int?
+    let profileImage: ProfileImage?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case username
+        case name
+        case bio
+        case location
+        case totalLikes = "total_likes"
+        case totalPhotos = "total_photos"
+        case profileImage = "profile_image"
+    }
 }
 
 struct ProfileImage: Codable {
@@ -119,7 +104,7 @@ struct Profile {
     let name: String
     let loginName: String
     let bio: String?
-
+    
     init(from profileResult: ProfileResult) {
         self.username = profileResult.username
         self.name = "\(profileResult.name ?? "")"
