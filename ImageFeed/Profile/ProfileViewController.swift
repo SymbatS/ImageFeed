@@ -134,7 +134,7 @@ final class ProfileViewController: UIViewController {
         avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
         avatarImageView.tintColor = UIColor(red: 174/255, green: 175/255, blue: 180/255, alpha: 1)
 
-        let tokenStorage = OAuth2TokenStorage()
+        let tokenStorage = OAuth2TokenStorage.shared
         tokenStorage.token = nil
     }
     

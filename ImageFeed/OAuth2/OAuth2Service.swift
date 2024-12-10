@@ -14,7 +14,12 @@ final class OAuth2Service {
     private init() {}
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread)
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.fetchOAuthToken(code, completion: completion)
+            }
+            return
+        }
         
         if let existingTask = task {
             if lastCode == code {
@@ -37,7 +42,7 @@ final class OAuth2Service {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let responseBody):
-                    let tokenStorage = OAuth2TokenStorage()
+                    let tokenStorage = OAuth2TokenStorage.shared
                     tokenStorage.token = responseBody.accessToken
                     completion(.success(responseBody.accessToken))
                     print("Token successfully retrieved: \(responseBody.accessToken)")
@@ -46,7 +51,6 @@ final class OAuth2Service {
                     completion(.failure(error))
                 }
                 
-                // Reset task and code after completion
                 self?.task = nil
                 self?.lastCode = nil
             }

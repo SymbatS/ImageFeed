@@ -4,7 +4,7 @@ final class SplashViewController: UIViewController {
     
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "splash_screen"))

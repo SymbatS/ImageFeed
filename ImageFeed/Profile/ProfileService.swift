@@ -7,13 +7,18 @@ final class ProfileService {
     private let baseURL = Constants.defaultBaseURL
     private var task: URLSessionTask?
     private var lastToken: String?
-    private let tokenStorage = OAuth2TokenStorage()
+    private let tokenStorage = OAuth2TokenStorage.shared
     private(set) var profile: Profile?
     
     private init() {}
     
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread)
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.fetchProfile(completion: completion)
+            }
+            return
+        }
         guard let token = tokenStorage.token else {
             completion(.failure(ServiceError.missingToken))
             return
@@ -69,48 +74,6 @@ enum ServiceError: Error {
     case invalidURL
     case noData
     case missingToken
-}
-
-struct ProfileResult: Codable {
-    let id: String
-    let username: String
-    let name: String?
-    let bio: String?
-    let location: String?
-    let totalLikes: Int?
-    let totalPhotos: Int?
-    let profileImage: ProfileImage?
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case username
-        case name
-        case bio
-        case location
-        case totalLikes = "total_likes"
-        case totalPhotos = "total_photos"
-        case profileImage = "profile_image"
-    }
-}
-
-struct ProfileImage: Codable {
-    let small: String?
-    let medium: String?
-    let large: String?
-}
-
-struct Profile {
-    let username: String
-    let name: String
-    let loginName: String
-    let bio: String?
-    
-    init(from profileResult: ProfileResult) {
-        self.username = profileResult.username
-        self.name = "\(profileResult.name ?? "")"
-        self.loginName = "@\(profileResult.username)"
-        self.bio = profileResult.bio
-    }
 }
 
 extension URLRequest {
