@@ -1,11 +1,66 @@
 import UIKit
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 final class OAuth2Service {
     static let shared = OAuth2Service()
     
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
     private init() {}
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest? {
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.fetchOAuthToken(code, completion: completion)
+            }
+            return
+        }
+        
+        if let existingTask = task {
+            if lastCode == code {
+                completion(.failure(AuthServiceError.invalidRequest))
+                return
+            } else {
+                existingTask.cancel()
+            }
+        }
+        
+        lastCode = code
+        
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            print("Failed to create OAuth token request")
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let responseBody):
+                    let tokenStorage = OAuth2TokenStorage.shared
+                    tokenStorage.token = responseBody.accessToken
+                    completion(.success(responseBody.accessToken))
+                    print("Token successfully retrieved: \(responseBody.accessToken)")
+                case .failure(let error):
+                    print("Error fetching OAuth token: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+                
+                self?.task = nil
+                self?.lastCode = nil
+            }
+        }
+        
+        self.task = task
+        task.resume()
+    }
+    
+    private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
             print("Invalid base URL")
             return nil
@@ -20,40 +75,12 @@ final class OAuth2Service {
         ]
         
         guard let url = urlComponents.url else {
-            print("Invalid URL")
+            print("Failed to create URL from components")
             return nil
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         return request
-    }
-    
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            completion(.failure(NSError(domain: "InvalidRequestError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create request"])))
-            return
-        }
-        
-        let storage = OAuth2TokenStorage()
-        
-        let task = URLSession.shared.data(for: request) { result in
-            switch result {
-            case .failure(let error):
-                print("Network error: \(error.localizedDescription)")
-                completion(.failure(error))
-                
-            case .success(let data):
-                do {
-                    let responseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    storage.token = responseBody.accessToken
-                    completion(.success(responseBody.accessToken))
-                } catch {
-                    print("Decoding error: \(error.localizedDescription)")
-                    completion(.failure(error))
-                }
-            }
-        }
-        task.resume()
     }
 }
