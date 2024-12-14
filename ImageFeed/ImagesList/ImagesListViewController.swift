@@ -24,14 +24,22 @@ final class ImagesListViewController: UIViewController {
     }
     
     @objc private func didChangePhotos(_ notification: Notification) {
-        guard let newPhotos = notification.object as? [Photo] else { return }
-        let startIndex = service.photos.count - newPhotos.count
-        let indexPaths = (startIndex..<service.photos.count).map { IndexPath(row: $0, section: 0) }
+        updateTableViewAnimated()
+    }
+    
+    @objc private func updateTableViewAnimated() {
+        let oldCount = tableView.numberOfRows(inSection: 0)
+        let newCount = service.photos.count
+        
+        guard newCount > oldCount else { return }
+        
+        let newIndexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
         
         tableView.performBatchUpdates {
-            tableView.insertRows(at: indexPaths, with: .automatic)
+            tableView.insertRows(at: newIndexPaths, with: .automatic)
         }
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier,
@@ -70,7 +78,6 @@ final class ImagesListViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Ок", style: .default))
         present(alert, animated: true)
     }
-    
 }
 
 // MARK: - UITableViewDataSource
