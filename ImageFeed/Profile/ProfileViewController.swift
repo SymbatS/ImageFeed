@@ -133,9 +133,14 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = ""
         avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
         avatarImageView.tintColor = UIColor(red: 174/255, green: 175/255, blue: 180/255, alpha: 1)
-
-        let tokenStorage = OAuth2TokenStorage.shared
-        tokenStorage.token = nil
+        
+        ProfileService.shared.clearData()
+        ProfileImageService.shared.clearImage()
+        ImagesListService.shared.clearImages()
+        
+        OAuth2TokenStorage.shared.token = nil
+        
+        ProfileLogoutService.shared.logout()
     }
     
     private func fetchAndUpdateProfile() {
@@ -165,6 +170,7 @@ final class ProfileViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Ок", style: .default))
         present(alert, animated: true)
     }
+    
     private func showLogoutAlert() {
         let alert = UIAlertController(
             title: "Пока, пока!",

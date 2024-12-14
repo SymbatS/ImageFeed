@@ -2,6 +2,7 @@ import UIKit
 @preconcurrency import WebKit
 
 protocol WebViewViewControllerDelegate: AnyObject {
+    
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewControllerDidCancel(_ vc: WebViewViewController)
 }
