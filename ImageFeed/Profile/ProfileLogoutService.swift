@@ -32,11 +32,10 @@ final class ProfileLogoutService {
     }
     
     private func navigateToLoginScreen() {
-        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
-            let splashViewController = SplashViewController()
-            window.rootViewController = UINavigationController(rootViewController: splashViewController)
-            
-            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
-        }
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) else { return }
+        let splashViewController = SplashViewController()
+        window.rootViewController = UINavigationController(rootViewController: splashViewController)
+        
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
     }
 }

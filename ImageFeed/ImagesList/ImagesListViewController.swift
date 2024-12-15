@@ -24,7 +24,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     @objc private func didChangePhotos(_ notification: Notification) {
-        updateTableViewAnimated()
+        self.updateTableViewAnimated()
     }
     
     @objc private func updateTableViewAnimated() {
@@ -83,7 +83,7 @@ final class ImagesListViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return service.photos.count
+        service.photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -104,8 +104,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         cell.onLikeButtonTapped = { [weak self] in
-            guard let self = self else { return }
-            self.toggleLike(for: indexPath)
+            self?.toggleLike(for: indexPath)
         }
         
         return cell

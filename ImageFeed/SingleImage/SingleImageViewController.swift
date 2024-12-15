@@ -31,14 +31,14 @@ final class SingleImageViewController: UIViewController {
     private func loadImage() {
         guard let imageURL = imageURL else { return }
         UIBlockingProgressHUD.show()
-        imageView.kf.setImage(with: imageURL) { result in
+        imageView.kf.setImage(with: imageURL) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(let imageResult):
-                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                self?.rescaleAndCenterImageInScrollView(image: imageResult.image)
                 print("Image loaded successfully.")
             case .failure(let error):
-                self.showErrorAlert()
+                self?.showErrorAlert()
                 print("Failed to load image: \(error)")
             }
         }

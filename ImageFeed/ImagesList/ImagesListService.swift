@@ -10,6 +10,12 @@ final class ImagesListService {
     private var isLoading = false
     private let networkService = NetworkService.shared
     
+    private static let dateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+    
     private init() {}
     
     func clearImages() {
@@ -31,7 +37,7 @@ final class ImagesListService {
                         Photo(
                             id: photoResult.id,
                             size: CGSize(width: photoResult.width ?? 1, height: photoResult.height ?? 1),
-                            createdAt: ISO8601DateFormatter().date(from: photoResult.createdAt ?? ""),
+                            createdAt: ImagesListService.dateFormatter.date(from: photoResult.createdAt ?? ""),
                             welcomeDescription: photoResult.description,
                             thumbImageURL: photoResult.urls.thumb,
                             largeImageURL: photoResult.urls.full,
@@ -56,11 +62,11 @@ final class ImagesListService {
         request.httpMethod = method
         request.addValue("Bearer \(String(tokenStorage.token ?? ""))", forHTTPHeaderField: "Authorization")
         
-        networkService.perform(request: request) { result in
+        networkService.perform(request: request) { [weak self] result in
             switch result {
             case .success:
-                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                    self.photos[index].isLiked = isLike
+                if let index = self?.photos.firstIndex(where: { $0.id == photoId }) {
+                    self?.photos[index].isLiked = isLike
                 }
                 NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
                 completion(.success(()))
