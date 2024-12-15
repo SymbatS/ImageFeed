@@ -10,7 +10,6 @@ final class ImagesListService {
     private var isLoading = false
     private let networkService = NetworkService.shared
     
-
     private init() {}
     
     func clearImages() {
