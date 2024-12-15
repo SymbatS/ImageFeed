@@ -10,12 +10,7 @@ final class ImagesListService {
     private var isLoading = false
     private let networkService = NetworkService.shared
     
-    private static let dateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter
-    }()
-    
+
     private init() {}
     
     func clearImages() {
@@ -37,7 +32,7 @@ final class ImagesListService {
                         Photo(
                             id: photoResult.id,
                             size: CGSize(width: photoResult.width ?? 1, height: photoResult.height ?? 1),
-                            createdAt: ImagesListService.dateFormatter.date(from: photoResult.createdAt ?? ""),
+                            createdAt: DateFormatter.dateFormatter.date(from: photoResult.createdAt ?? ""),
                             welcomeDescription: photoResult.description,
                             thumbImageURL: photoResult.urls.thumb,
                             largeImageURL: photoResult.urls.full,
