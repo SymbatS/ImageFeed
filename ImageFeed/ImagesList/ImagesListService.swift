@@ -31,7 +31,7 @@ final class ImagesListService {
                         Photo(
                             id: photoResult.id,
                             size: CGSize(width: photoResult.width ?? 1, height: photoResult.height ?? 1),
-                            createdAt: DateFormatter.dateFormatter.date(from: photoResult.createdAt ?? ""),
+                            createdAt: DateFormatter.iso8601DateFormatter.date(from: photoResult.createdAt ?? ""),
                             welcomeDescription: photoResult.description,
                             thumbImageURL: photoResult.urls.thumb,
                             largeImageURL: photoResult.urls.full,

@@ -92,7 +92,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         let photo = service.photos[indexPath.row]
-        let date = photo.createdAt.map { DateFormatter.localizedString(from: $0, dateStyle: .medium, timeStyle: .none) } ?? "Unknown date"
+        let date = photo.createdAt.map { DateFormatter.localizedDateFormatter.string(from: $0) } ?? "Unknown date"
         
         cell.configure(
             imageURL: URL(string: photo.thumbImageURL),
