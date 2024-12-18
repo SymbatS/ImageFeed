@@ -24,7 +24,8 @@ final class AuthViewController: UIViewController {
                 assertionFailure("Failed to prepare for \(showAuthViewSegueIdentifier)")
                 return
             }
-            let webViewPresenter = WebViewPresenter()
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
             webViewViewController.presenter = webViewPresenter
             webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
@@ -44,6 +45,7 @@ final class AuthViewController: UIViewController {
 // MARK: - WebViewViewControllerDelegate
 
 extension AuthViewController: WebViewViewControllerDelegate {
+    
     func webViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
@@ -65,6 +67,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             }
         }
     }
+    
     private func showAlert() {
         let alert = UIAlertController(
             title: "Что-то пошло не так(",
