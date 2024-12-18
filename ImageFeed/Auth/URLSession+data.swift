@@ -4,9 +4,15 @@ enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
+    case invalidURL
+    case noData
+    case decodingError(Error)
+    case httpError(Int)
+    case invalidResponse
 }
 
 extension URLSession {
+    
     func objectTask<T: Decodable>(
         for request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
@@ -35,6 +41,7 @@ extension URLSession {
         }
         return task
     }
+    
     func data(
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void

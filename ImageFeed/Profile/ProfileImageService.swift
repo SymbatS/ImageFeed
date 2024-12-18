@@ -10,6 +10,10 @@ final class ProfileImageService {
     
     private init() {}
     
+    func clearImage() {
+        UserDefaults.standard.removeObject(forKey: "profileImage")
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {

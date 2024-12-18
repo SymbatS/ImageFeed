@@ -12,6 +12,10 @@ final class ProfileService {
     
     private init() {}
     
+    func clearData() {
+        UserDefaults.standard.removeObject(forKey: "profileData")
+    }
+    
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
