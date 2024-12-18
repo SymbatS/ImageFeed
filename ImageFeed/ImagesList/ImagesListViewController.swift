@@ -28,15 +28,17 @@ final class ImagesListViewController: UIViewController {
     }
     
     @objc private func updateTableViewAnimated() {
-        let oldCount = tableView.numberOfRows(inSection: 0)
-        let newCount = service.photos.count
-        
-        guard newCount > oldCount else { return }
-        
-        let newIndexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-        
-        tableView.performBatchUpdates {
-            tableView.insertRows(at: newIndexPaths, with: .automatic)
+        DispatchQueue.main.async {
+            let oldCount = self.tableView.numberOfRows(inSection: 0)
+            let newCount = self.service.photos.count
+            
+            guard newCount > oldCount else { return }
+            
+            let newIndexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+            
+            self.tableView.performBatchUpdates {
+                self.tableView.insertRows(at: newIndexPaths, with: .automatic)
+            }
         }
     }
     
