@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 protocol WebViewPresenterProtocol {
     func viewDidLoad()
@@ -9,7 +9,6 @@ protocol WebViewPresenterProtocol {
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     weak var view: WebViewViewControllerProtocol?
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     var authHelper: AuthHelperProtocol
     
     init(authHelper: AuthHelperProtocol) {
@@ -22,10 +21,10 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     
     func didUpdateProgressValue(_ newValue: Double) {
         let newProgressValue = Float(newValue)
-        view?.setProgressValue(newProgressValue)
-        
-        let shouldHideProgress = shouldHideProgress(for: newProgressValue)
-        view?.setProgressHidden(shouldHideProgress)
+        DispatchQueue.main.async {
+            self.view?.setProgressValue(newProgressValue)
+            self.view?.setProgressHidden(self.shouldHideProgress(for: newProgressValue))
+        }
     }
     
     func shouldHideProgress(for value: Float) -> Bool {

@@ -7,7 +7,6 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    
     @IBAction private func didTapShareButton(_ sender: UIButton) {
         guard let imageURL else { return }
         let share = UIActivityViewController(

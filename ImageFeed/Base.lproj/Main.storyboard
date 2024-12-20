@@ -206,23 +206,39 @@
             </objects>
             <point key="canvasLocation" x="1988.5496183206105" y="-23.239436619718312"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="2EE-2c-54h">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Il6-TY-oWw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <navigationController storyboardIdentifier="NavigationController" id="dYL-FS-Nab" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Eyq-Cu-mN3">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="7kr-hB-a05" kind="presentation" identifier="NavControllerSeque" id="SHj-bb-uB0"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="82" y="-700"/>
+        </scene>
         <!--Auth View Controller-->
         <scene sceneID="Mvo-bD-OrT">
             <objects>
                 <viewController storyboardIdentifier="AuthViewController" id="7kr-hB-a05" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oKS-EW-ni7">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="auth_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="Grm-eT-8W0">
-                                <rect key="frame" x="166.66666666666666" y="396" width="60" height="60"/>
+                                <rect key="frame" x="166.66666666666666" y="391" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="8Hm-ze-doe"/>
                                     <constraint firstAttribute="width" secondItem="Grm-eT-8W0" secondAttribute="height" multiplier="1:1" id="GN8-kv-5HX"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7pP-Vk-y4I">
-                                <rect key="frame" x="16" y="680" width="361" height="48"/>
+                                <rect key="frame" x="16" y="704" width="361" height="48"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="eN7-rZ-Chx"/>
@@ -261,7 +277,7 @@
         <!--Web View View Controller-->
         <scene sceneID="ldw-bR-Q7Q">
             <objects>
-                <viewController id="jsN-gV-xXd" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="jsN-gV-xXd" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rXR-m3-gCk">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -15,7 +15,7 @@ protocol WebViewViewControllerProtocol: AnyObject {
 }
 
 final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
-    
+    private let backButton = UIButton(frame: .zero)
     var presenter: WebViewPresenterProtocol?
     private var estimatedProgressObservation: NSKeyValueObservation?
     
@@ -26,7 +26,14 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
+        webView.addObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: [.new],
+            context: nil
+        )
         presenter?.viewDidLoad()
+        configureBackButton()
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -38,15 +45,39 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     }
     
     func setProgressValue(_ newValue: Float) {
-        progressView.progress = newValue
+        DispatchQueue.main.async {
+            self.progressView.progress = newValue
+        }
     }
     
     func setProgressHidden(_ isHidden: Bool) {
-        progressView.isHidden = isHidden
+        DispatchQueue.main.async {
+            self.progressView.isHidden = isHidden
+        }
     }
     
     func load(request: URLRequest) {
         webView.load(request)
+    }
+    
+    @objc private func dismissWebView() {
+        dismiss(animated: true)
+    }
+    
+    private func configureBackButton() {
+        view.addSubview(backButton)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        let image: UIImage? = UIImage(named:"nav_back_button_white")?.withRenderingMode(.alwaysTemplate)
+        backButton.setImage(image, for: .normal)
+        backButton.tintColor = UIColor(named: "ypBlack")
+        backButton.addTarget(self, action: #selector(dismissWebView), for: .touchUpInside)
+        NSLayoutConstraint.activate([
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
+            backButton.widthAnchor.constraint(equalToConstant: 24),
+            backButton.heightAnchor.constraint(equalToConstant: 24)
+        ]
+        )
     }
 }
 // MARK: - WebViewViewControllerWKNavigationDelegate
