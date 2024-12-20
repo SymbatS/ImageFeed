@@ -8,12 +8,6 @@ protocol ProfileViewProtocol: AnyObject {
     func clearProfile()
 }
 
-protocol ProfileViewPresenterProtocol {
-    var view: ProfileViewProtocol? { get set }
-    func viewDidLoad()
-    func didTapLogout()
-}
-
 final class ProfileViewController: UIViewController, ProfileViewProtocol {
     var presenter: ProfileViewPresenterProtocol?
     

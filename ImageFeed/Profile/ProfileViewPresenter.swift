@@ -1,8 +1,15 @@
 import Foundation
 
+protocol ProfileViewPresenterProtocol {
+    var view: ProfileViewProtocol? { get set }
+    func viewDidLoad()
+    func didTapLogout()
+}
+
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     weak var view: ProfileViewProtocol?
     var viewDidLoadDidCalled = false
+    var viewDidTapLogout = false
     private let profileService: ProfileServiceProtocol
     private let profileImageService: ProfileImageServiceProtocol
     
@@ -22,6 +29,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     func didTapLogout() {
         clearProfile()
         ProfileLogoutService.shared.logout()
+        viewDidTapLogout = true
     }
     
     private func fetchProfile() {
