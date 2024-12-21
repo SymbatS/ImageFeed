@@ -209,7 +209,6 @@
         <!--Navigation Controller-->
         <scene sceneID="2EE-2c-54h">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Il6-TY-oWw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="NavigationController" id="dYL-FS-Nab" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Eyq-Cu-mN3">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
@@ -219,6 +218,7 @@
                         <segue destination="7kr-hB-a05" kind="presentation" identifier="NavControllerSeque" id="SHj-bb-uB0"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Il6-TY-oWw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="82" y="-700"/>
         </scene>
@@ -269,6 +269,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="nJi-tn-LBB"/>
+                    <connections>
+                        <outlet property="loginButton" destination="7pP-Vk-y4I" id="PXv-rp-LXa"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aIp-5h-0Mi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

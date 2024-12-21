@@ -31,6 +31,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
             options: [.new],
             context: nil
         )
+        webView.accessibilityIdentifier = "UnsplashWebView"
         presenter?.viewDidLoad()
         configureBackButton()
     }
@@ -70,6 +71,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         backButton.setImage(image, for: .normal)
         backButton.tintColor = UIColor(named: "ypBlack")
         backButton.addTarget(self, action: #selector(dismissWebView), for: .touchUpInside)
+        backButton.accessibilityIdentifier = "nav_back_button_white"
         NSLayoutConstraint.activate([
             backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),

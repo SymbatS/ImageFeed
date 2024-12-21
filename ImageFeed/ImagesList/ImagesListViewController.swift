@@ -11,11 +11,12 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     @IBOutlet var tableView: UITableView!
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     var service: ImagesListServiceProtocol = ImagesListService.shared
+    private var shouldDisablePagination: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        shouldDisablePagination = CommandLine.arguments.contains("--disable-pagination")
         setupTableView()
-        
         presenter?.viewDidLoad()
         service.fetchPhotosNextPage()
     }
@@ -44,11 +45,20 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
         }
     }
     
+    private func fetchData(page: Int) {
+        if shouldDisablePagination && page > 1 {
+            return
+        }
+        service.fetchPhotosNextPage()
+        print("Fetching data for page \(page)")
+    }
+    
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
+        tableView.accessibilityIdentifier = "table View"
     }
     
     private func toggleLike(for indexPath: IndexPath) {
@@ -114,6 +124,8 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if shouldDisablePagination { return }
+        
         if indexPath.row == service.photos.count - 1 {
             service.fetchPhotosNextPage()
         }

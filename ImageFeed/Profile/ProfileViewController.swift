@@ -60,6 +60,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         exitButton.setImage(UIImage(systemName: "ipad.and.arrow.forward"), for: .normal)
         exitButton.tintColor = UIColor(red: 245/255, green: 107/255, blue: 108/255, alpha: 1)
         exitButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        exitButton.accessibilityIdentifier = "Logout"
         view.addSubview(exitButton)
         
         NSLayoutConstraint.activate([
