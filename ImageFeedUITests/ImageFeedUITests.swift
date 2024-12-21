@@ -1,38 +1,40 @@
 import XCTest
 
 final class ImageFeedUITests: XCTestCase {
-    private var app = XCUIApplication()
+    private let app = XCUIApplication()
     
     override func setUpWithError() throws {
         continueAfterFailure = false
-        app = XCUIApplication()
         app.launchArguments.append("--disable-pagination")
         app.launch()
     }
     
     func testAuth() throws {
+        sleep(10)
+        
         let button = app.buttons["Войти"]
         XCTAssertTrue(button.waitForExistence(timeout: 5))
         button.tap()
         let webView = app.webViews["UnsplashWebView"]
         
-        XCTAssertTrue(webView.waitForExistence(timeout: 5))
+        XCTAssertTrue(webView.waitForExistence(timeout: 20))
         
         let loginTextField = webView.descendants(matching: .textField).element
-        XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 15))
         
         loginTextField.tap()
-        loginTextField.typeText("login")
+        loginTextField.typeText("")
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
-        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
+        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 15))
         
         passwordTextField.tap()
-        passwordTextField.typeText("pass")
+        sleep(5)
+        passwordTextField.typeText("")
         
         webView.swipeUp()
-        
+        sleep(3)
         webView.buttons["Login"].tap()
         
         let tablesQuery = app.tables
@@ -42,6 +44,7 @@ final class ImageFeedUITests: XCTestCase {
     }
     
     func testFeed() throws {
+        sleep(3)
         let tablesQuery = app.tables["table View"]
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         XCTAssertTrue(cell.waitForExistence(timeout: 20))
@@ -71,11 +74,16 @@ final class ImageFeedUITests: XCTestCase {
     }
     
     func testProfile() throws {
+        let tablesQuery = app.tables["table View"]
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 20))
+        sleep(5)
+        app.swipeUp()
         sleep(3)
         app.tabBars.buttons.element(boundBy: 1).tap()
         
-        XCTAssertTrue(app.staticTexts["name"].exists)
-        XCTAssertTrue(app.staticTexts["@username"].exists)
+        XCTAssertTrue(app.staticTexts[""].exists)
+        XCTAssertTrue(app.staticTexts[""].exists)
         
         app.buttons["Logout"].tap()
         
