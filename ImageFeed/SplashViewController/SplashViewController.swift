@@ -44,9 +44,8 @@ final class SplashViewController: UIViewController {
         }
         authViewController.delegate = self
         authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true, completion: nil)
+        present(authViewController, animated: true)
     }
-    
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {

@@ -1,47 +1,25 @@
 import UIKit
 
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImageListViewPresenterProtocol? { get set }
+    func updateTableView()
+}
+
 // MARK: - ImagesListViewController
-final class ImagesListViewController: UIViewController {
-    @IBOutlet private var tableView: UITableView!
+final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
+    var presenter: ImageListViewPresenterProtocol?
+    @IBOutlet var tableView: UITableView!
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private let service = ImagesListService.shared
+    var service: ImagesListServiceProtocol = ImagesListService.shared
+    private var shouldDisablePagination: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 200
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didChangePhotos(_:)),
-            name: ImagesListService.didChangeNotification,
-            object: nil
-        )
-        
+        shouldDisablePagination = CommandLine.arguments.contains("--disable-pagination")
+        setupTableView()
+        presenter?.viewDidLoad()
         service.fetchPhotosNextPage()
     }
-    
-    @objc private func didChangePhotos(_ notification: Notification) {
-        self.updateTableViewAnimated()
-    }
-    
-    @objc private func updateTableViewAnimated() {
-        DispatchQueue.main.async {
-            let oldCount = self.tableView.numberOfRows(inSection: 0)
-            let newCount = self.service.photos.count
-            
-            guard newCount > oldCount else { return }
-            
-            let newIndexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-            
-            self.tableView.performBatchUpdates {
-                self.tableView.insertRows(at: newIndexPaths, with: .automatic)
-            }
-        }
-    }
-    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier,
@@ -51,6 +29,36 @@ final class ImagesListViewController: UIViewController {
             guard let url = URL(string: photo.largeImageURL) else { return }
             viewController.imageURL = url
         }
+    }
+    
+    func updateTableView() {
+        DispatchQueue.main.async {
+            let oldCount = self.tableView.numberOfRows(inSection: 0)
+            let newCount = self.service.photos.count
+            
+            guard newCount > oldCount else { return }
+            
+            let newIndexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+            self.tableView.performBatchUpdates {
+                self.tableView.insertRows(at: newIndexPaths, with: .automatic)
+            }
+        }
+    }
+    
+    private func fetchData(page: Int) {
+        if shouldDisablePagination && page > 1 {
+            return
+        }
+        service.fetchPhotosNextPage()
+        print("Fetching data for page \(page)")
+    }
+    
+    private func setupTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 200
+        tableView.accessibilityIdentifier = "table View"
     }
     
     private func toggleLike(for indexPath: IndexPath) {
@@ -116,6 +124,8 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if shouldDisablePagination { return }
+        
         if indexPath.row == service.photos.count - 1 {
             service.fetchPhotosNextPage()
         }

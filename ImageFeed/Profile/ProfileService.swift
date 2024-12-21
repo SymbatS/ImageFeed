@@ -1,6 +1,11 @@
 import UIKit
 
-final class ProfileService {
+protocol ProfileServiceProtocol {
+    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void)
+    func clearData()
+}
+
+final class ProfileService: ProfileServiceProtocol {
     static let shared = ProfileService()
     
     private let session = URLSession.shared

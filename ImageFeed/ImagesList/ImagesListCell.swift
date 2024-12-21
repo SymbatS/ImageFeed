@@ -16,6 +16,7 @@ final class ImagesListCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer?.frame = gradientView.bounds
+        print("Button frame: \(likeButton.frame)")
     }
     
     override func prepareForReuse() {
@@ -43,6 +44,7 @@ final class ImagesListCell: UITableViewCell {
             UIImage(named: isLiked ? "Active" : "No Active"),
             for: .normal
         )
+        likeButton.accessibilityIdentifier = isLiked ? "Active" : "No Active"
         dateLabel.text = date
         self.onLikeButtonTapped = onLikeButtonTapped
         cellImage.kf.setImage(with: imageURL) { result in

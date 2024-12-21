@@ -1,8 +1,15 @@
 import UIKit
 import Kingfisher
 
+protocol ImagesListServiceProtocol: AnyObject {
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func updatePhotoLikeStatus(photoId: String, isLiked: Bool)
+}
+
 // MARK: - ImagesListService
-final class ImagesListService {
+final class ImagesListService: ImagesListServiceProtocol {
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     private(set) var photos: [Photo] = []
