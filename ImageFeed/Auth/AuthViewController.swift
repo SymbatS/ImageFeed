@@ -6,14 +6,14 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
+    @IBOutlet weak var loginButton: UIButton!
     weak var delegate: AuthViewControllerDelegate?
-    
+    private let backButton = UIButton(frame: .zero)
     private let showAuthViewSegueIdentifier = "ShowWebView"
     private let oauth2Service = OAuth2Service.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureBackButton()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -24,17 +24,15 @@ final class AuthViewController: UIViewController {
                 assertionFailure("Failed to prepare for \(showAuthViewSegueIdentifier)")
                 return
             }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
+            navigationController?.setNavigationBarHidden(false, animated: false)
         } else {
             super.prepare(for: segue, sender: sender)
         }
-    }
-    
-    private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button_white")
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button_white")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack")
     }
 }
 
@@ -62,6 +60,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             }
         }
     }
+    
     private func showAlert() {
         let alert = UIAlertController(
             title: "Что-то пошло не так(",
