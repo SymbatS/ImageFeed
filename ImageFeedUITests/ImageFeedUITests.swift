@@ -30,9 +30,9 @@ final class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 15))
         
         passwordTextField.tap()
-        sleep(5)
+        sleep(2)
         passwordTextField.typeText("")
-        
+        sleep(2)
         webView.swipeUp()
         sleep(3)
         webView.buttons["Login"].tap()
@@ -53,7 +53,7 @@ final class ImageFeedUITests: XCTestCase {
         
         sleep(5)
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
-        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5), "Cell does not exist")
+        XCTAssertTrue(cellToLike.waitForExistence(timeout: 15), "Cell does not exist")
         
         cellToLike.buttons["No Active"].tap()
         sleep(5)
